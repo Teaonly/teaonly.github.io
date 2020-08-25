@@ -1,2 +1,5 @@
 # teaonly.github.io
-This is my personal site, source code is at the 'source' branch.
+
+A distill.pub styled personal static site generator, inspired from Zola and distill.pub.
+
+
