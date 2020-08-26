@@ -4,14 +4,10 @@ version = "0.1.0"
 authors = ["Zhou Chang <achang.zhou@gmail.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 clap = "2"                  # clap is used to parse and validate the string of command line arguments provided by the user at runtime. 
 lazy_static = "1.1.0"       # A macro for declaring lazily evaluated statics.
-glob = "0.3"                # Querying the filesystem for all files that match a particular pattern. 
-
-
-
-
+glob = "0.3"                # Querying the filesystem for all files that match a particular pattern.
+tera = "1"                  # A powerful, easy to use template engine for Rust
+yaml-rust = "0.4.3"         # Yaml parser for config.yaml
 
