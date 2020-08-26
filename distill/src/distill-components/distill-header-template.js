@@ -1,4 +1,4 @@
-import logo from '../assets/distill-logo.svg';
+//import logo from '../assets/distill-logo.svg';
 
 export const headerTemplate = `
 <style>
@@ -47,33 +47,34 @@ distill-header svg {
   }
 }
 distill-header svg path {
+  /*
   fill: none;
   stroke: rgba(255, 255, 255, 0.8);
   stroke-width: 3px;
+  */
 }
 distill-header .logo {
-  font-size: 17px;
-  font-weight: 200;
+  font-size: 18px;
+  font-weight: 500;
 }
 distill-header .nav {
   float: right;
   font-weight: 300;
 }
 distill-header .nav a {
-  font-size: 12px;
+  font-size: 14px;
   margin-left: 24px;
   text-transform: uppercase;
 }
 </style>
 <div class="content">
   <a href="/" class="logo">
-    ${logo}
-    Distill
+    Teaonly的个人网站
   </a>
   <nav class="nav">
-    <a href="/about/">About</a>
-    <a href="/prize/">Prize</a>
-    <a href="/journal/">Submit</a>
+    <a href="/">博客</a>
+    <a href="/memo/">备忘</a>
+    <a href="/about/">关于</a>
   </nav>
 </div>
 `;

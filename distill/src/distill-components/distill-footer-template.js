@@ -1,4 +1,4 @@
-import logo from '../assets/distill-logo.svg';
+//import logo from '../assets/distill-logo.svg';
 
 export const footerTemplate = `
 <style>
@@ -54,19 +54,13 @@ export const footerTemplate = `
 <div class='footer-container'>
 
   <a href="/" class="logo">
-    ${logo}
-    Distill
-  </a> is dedicated to clear explanations of machine learning
+    Teaonly
+  </a> 技术评论和备忘, 遵循 MIT 许可证
 
   <div class="nav">
-    <a href="https://distill.pub/about/">About</a>
-    <a href="https://distill.pub/journal/">Submit</a>
-    <a href="https://distill.pub/prize/">Prize</a>
-    <a href="https://distill.pub/archive/">Archive</a>
-    <a href="https://distill.pub/rss.xml">RSS</a>
-    <a href="https://github.com/distillpub">GitHub</a>
-    <a href="https://twitter.com/distillpub">Twitter</a>
-    &nbsp;&nbsp;&nbsp;&nbsp; ISSN 2476-0757
+    <a href="https://github.com/teaonly">GitHub</a>
+    <a href="https://weibo.com/teaonly">微博</a>
+    <a href="https://twitter.com/achangzhou">Twitter</a>
   </div>
 
 </div>
