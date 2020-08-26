@@ -1,5 +1,5 @@
 [package]
-name = "generator"
+name = "gen"
 version = "0.1.0"
 authors = ["Zhou Chang <achang.zhou@gmail.com>"]
 edition = "2018"
@@ -7,7 +7,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = "2"
-lazy_static = "1.1.0"
+clap = "2"                  # clap is used to parse and validate the string of command line arguments provided by the user at runtime. 
+lazy_static = "1.1.0"       # A macro for declaring lazily evaluated statics.
+glob = "0.3"                # Querying the filesystem for all files that match a particular pattern. 
+
+
+
 
 

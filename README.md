@@ -5,7 +5,7 @@ A distill.pub styled personal static site generator, inspired from Zola and dist
 
 ## directories 
 
-* template
+* distill
 
 Customized distill.pub template source from https://github.com/distillpub/template .
 
