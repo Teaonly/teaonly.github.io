@@ -23,7 +23,7 @@ d-article {
 }
 
 d-article > * {
-  grid-column: text;
+  grid-column: page;
 }
 
 @media(min-width: 768px) {

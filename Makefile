@@ -1,18 +1,17 @@
 distill:
-	cd distill
-	npm run build
+	cd distill;npm run build
 
-generator:
-	cd generator
-	cargo build --release
+gen:
+	cd generator;cargo build
 
-build: distill generator
-	rm -rf dist
-	mkdir -p dist
-	cp distill/dist/template* ./dist/
-	
+build:
+	rm -rf public
+	mkdir -p public
+	cp distill/dist/template* ./public/
+	generator/target/debug/gen build
+
 clean:
-	rm -rf dist
+	rm -rf public
 
-install: distill
+install:
 	echo "TODO"

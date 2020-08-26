@@ -1,4 +1,4 @@
 distill/dist/
-dist/
+public/
 generator/Cargo.lock
 generator/target/
