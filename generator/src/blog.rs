@@ -4,8 +4,9 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use yaml_rust::{YamlLoader};
 use chrono::{NaiveDate};
-
 use pulldown_cmark::{Options, Parser};
+use tera::{Context, Tera};
+
 use crate::html;
 
 #[derive(Debug,Default)]
@@ -65,18 +66,26 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
     return Ok(blog);
 }
 
-enum TableState {
-    Head,
-    Body,
+pub fn convert(mkdoc: &str) -> String {
+    let parser = Parser::new_ext(mkdoc, Options::empty());
+
+    let mut htdoc = String::new();
+    html::push_html(&mut htdoc, parser);
+    htdoc
 }
 
-pub fn convert(mkdoc: &str) -> String {
-    let mut htdoc = String::new();
+pub fn render(tera: &mut tera::Tera, htdoc: &str, blog: &Blog) -> Result<String, String> {
+    let mut context = Context::new();
 
-    let mut parser = Parser::new_ext(mkdoc, Options::empty());
+    context.insert("title", &blog.title);
+    context.insert("desc", &blog.desc);
+    context.insert("markdown", htdoc);
 
-    html::push_html(&mut htdoc, parser);
+    let result = tera.render("blog.html", &context);
+    if result.is_err() {
+        return Err(format!("render error: {}", result.err().unwrap().to_string()));
+    }
 
-    htdoc
+    return Ok( result.unwrap() );
 }
 

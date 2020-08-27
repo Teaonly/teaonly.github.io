@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate tera;
 extern crate yaml_rust;
 extern crate chrono;
@@ -13,7 +12,7 @@ use std::fs;
 use std::collections::HashSet;
 use std::path::PathBuf;
 use glob::glob;
-use tera::{Context, Result, Tera};
+use tera::Tera;
 
 fn main() {
     let command = cli::build_cli().get_matches();
@@ -61,7 +60,8 @@ fn main() {
 
             // do convert and render
             let html = blog::convert(&blog.raw);
-            println!("{}", html);
+            let full_html = blog::render(&mut tera, &html, &blog);
+            println!("{}", full_html.unwrap());
         } else {
             panic!( format!("Parse blog {} error!", blog_path.to_str().unwrap()));
         }
