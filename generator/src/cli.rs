@@ -11,7 +11,7 @@ pub fn build_cli() -> App<'static, 'static> {
                 .short("r")
                 .long("root")
                 .takes_value(true)
-                .default_value("site/")
+                .default_value("site")
                 .help("Directory to use as root of project")
         )
         .subcommands(vec![

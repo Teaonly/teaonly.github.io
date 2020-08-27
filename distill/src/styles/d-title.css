@@ -27,7 +27,7 @@ d-title {
 }
 
 d-title h1 {
-  grid-column: text;
+  grid-column: page;
   font-size: 40px;
   font-weight: 700;
   line-height: 1.1em;
@@ -44,7 +44,7 @@ d-title p {
   font-weight: 300;
   font-size: 1.2rem;
   line-height: 1.55em;
-  grid-column: text;
+  grid-column: page;
 }
 
 d-title .status {

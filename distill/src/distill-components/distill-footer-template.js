@@ -35,7 +35,7 @@ export const footerTemplate = `
 }
 
 .footer-container {
-  grid-column: text;
+  grid-column: page;
 }
 
 .footer-container .nav {
