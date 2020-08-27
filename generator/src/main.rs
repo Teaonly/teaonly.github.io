@@ -1,10 +1,16 @@
 #[macro_use]
 extern crate tera;
+extern crate yaml_rust;
+extern crate chrono;
+extern crate pulldown_cmark;
 
+mod help;
 mod cli;
 mod blog;
+mod html;
 
 use std::fs;
+use std::collections::HashSet;
 use std::path::PathBuf;
 use glob::glob;
 use tera::{Context, Result, Tera};
@@ -37,18 +43,29 @@ fn main() {
     let all_blog_path: Vec<_> = blog_glob.filter_map(|e| e.ok()).collect();
     let top_index = root_path.join(PathBuf::from("content/index.md"));
 
+    let mut all_code = HashSet::<String>::new();
     let mut all_blog: Vec<blog::Blog> = vec![];
-
     for ref blog_path in all_blog_path {
         if let Ok(blog) = blog::parse(blog_path) {
-            all_blog.push(blog);
+            if all_code.contains( &blog.code ) {
+                panic!( format!("Repeated blog's code from {}!", blog_path.to_str().unwrap()));
+            }
+            all_code.insert(blog.code.clone());
+
+            // collect basic info from full blog
+            let mut blog_short : blog::Blog = Default::default();
+            blog_short.title = blog.title.clone();
+            blog_short.desc = blog.desc.clone();
+            blog_short.date = blog.date.clone();
+            all_blog.push(blog_short);
+
+            // do convert and render
+            let html = blog::convert(&blog.raw);
+            println!("{}", html);
         } else {
             panic!( format!("Parse blog {} error!", blog_path.to_str().unwrap()));
         }
     }
 
-    /* ====== step.2 rendering file and build target fold */
-
-
-    /* ====== step.3 copy resource file */
+    /* ====== step.2 create */
 }
