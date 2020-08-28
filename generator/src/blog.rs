@@ -65,6 +65,11 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
 }
 
 pub fn convert(mkdoc: &str) -> String {
+    let mut options = Options::empty();
+    options.insert(Options::ENABLE_STRIKETHROUGH);
+    options.insert(Options::ENABLE_FOOTNOTES);
+    options.insert(Options::ENABLE_TASKLISTS);
+    options.insert(Options::ENABLE_TABLES);
     let parser = Parser::new_ext(mkdoc, Options::empty());
 
     let mut htdoc = String::new();

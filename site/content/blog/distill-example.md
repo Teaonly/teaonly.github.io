@@ -7,14 +7,12 @@ target: artical
 date: 2019-10-10
 -->
 
-python code:
+Here's a simple footnote,[^1] and here's a longer one.[^bignote]
 
-math example:
+[^1]: This is the first footnote.
 
-```^
-a = c^2 + d_y
+[^bignote]: Here's one with multiple paragraphs and code.
 
-```
+    Indent paragraphs to include them in the footnote.
 
-> Hello Worlding
-> hahah
+# lasd
