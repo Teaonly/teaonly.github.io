@@ -24,11 +24,10 @@ use std::collections::HashMap;
 use std::fmt::{Arguments, Write as FmtWrite};
 use std::io::{self, ErrorKind, Write};
 
-use pulldown_cmark::Event::*;
-use pulldown_cmark::{Alignment, CodeBlockKind, Event, LinkType, Tag};
-use pulldown_cmark::CowStr;
-
-use crate::help;
+use crate::escape::{escape_href, escape_html};
+use crate::parse::Event::*;
+use crate::parse::{Alignment, CodeBlockKind, Event, LinkType, Tag};
+use crate::strings::CowStr;
 
 enum TableState {
     Head,
@@ -43,7 +42,7 @@ struct WriteWrapper<W>(W);
 
 /// Trait that allows writing string slices. This is basically an extension
 /// of `std::io::Write` in order to include `String`.
-pub trait StrWrite {
+pub(crate) trait StrWrite {
     fn write_str(&mut self, s: &str) -> io::Result<()>;
 
     fn write_fmt(&mut self, args: Arguments) -> io::Result<()>;
@@ -153,12 +152,12 @@ where
                     self.end_tag(tag)?;
                 }
                 Text(text) => {
-                    help::escape_html(&mut self.writer, &text)?;
+                    escape_html(&mut self.writer, &text)?;
                     self.end_newline = text.ends_with('\n');
                 }
                 Code(text) => {
                     self.write("<code>")?;
-                    help::escape_html(&mut self.writer, &text)?;
+                    escape_html(&mut self.writer, &text)?;
                     self.write("</code>")?;
                 }
                 Html(html) => {
@@ -180,7 +179,7 @@ where
                 FootnoteReference(name) => {
                     let len = self.numbers.len() + 1;
                     self.write("<sup class=\"footnote-reference\"><a href=\"#")?;
-                    help::escape_html(&mut self.writer, &name)?;
+                    escape_html(&mut self.writer, &name)?;
                     self.write("\">")?;
                     let number = *self.numbers.entry(name).or_insert(len);
                     write!(&mut self.writer, "{}", number)?;
@@ -259,10 +258,10 @@ where
                     CodeBlockKind::Fenced(info) => {
                         let lang = info.split(' ').next().unwrap();
                         if lang.is_empty() {
-                            self.write("<d-code block=\"\" language=\"clike\">")
+                            self.write("<pre><code>")
                         } else {
-                            self.write("<d-code block=\"\" language=\"")?;
-                            help::escape_html(&mut self.writer, lang)?;
+                            self.write("<pre><code class=\"language-")?;
+                            escape_html(&mut self.writer, lang)?;
                             self.write("\">")
                         }
                     }
@@ -304,30 +303,30 @@ where
             Tag::Strikethrough => self.write("<del>"),
             Tag::Link(LinkType::Email, dest, title) => {
                 self.write("<a href=\"mailto:")?;
-                help::escape_href(&mut self.writer, &dest)?;
+                escape_href(&mut self.writer, &dest)?;
                 if !title.is_empty() {
                     self.write("\" title=\"")?;
-                    help::escape_html(&mut self.writer, &title)?;
+                    escape_html(&mut self.writer, &title)?;
                 }
                 self.write("\">")
             }
             Tag::Link(_link_type, dest, title) => {
                 self.write("<a href=\"")?;
-                help::escape_href(&mut self.writer, &dest)?;
+                escape_href(&mut self.writer, &dest)?;
                 if !title.is_empty() {
                     self.write("\" title=\"")?;
-                    help::escape_html(&mut self.writer, &title)?;
+                    escape_html(&mut self.writer, &title)?;
                 }
                 self.write("\">")
             }
             Tag::Image(_link_type, dest, title) => {
                 self.write("<img src=\"")?;
-                help::escape_href(&mut self.writer, &dest)?;
+                escape_href(&mut self.writer, &dest)?;
                 self.write("\" alt=\"")?;
                 self.raw_text()?;
                 if !title.is_empty() {
                     self.write("\" title=\"")?;
-                    help::escape_html(&mut self.writer, &title)?;
+                    escape_html(&mut self.writer, &title)?;
                 }
                 self.write("\" />")
             }
@@ -337,7 +336,7 @@ where
                 } else {
                     self.write("\n<div class=\"footnote-definition\" id=\"")?;
                 }
-                help::escape_html(&mut self.writer, &*name)?;
+                escape_html(&mut self.writer, &*name)?;
                 self.write("\"><sup class=\"footnote-definition-label\">")?;
                 let len = self.numbers.len() + 1;
                 let number = *self.numbers.entry(name).or_insert(len);
@@ -426,7 +425,7 @@ where
                     nest -= 1;
                 }
                 Html(text) | Code(text) | Text(text) => {
-                    help::escape_html(&mut self.writer, &text)?;
+                    escape_html(&mut self.writer, &text)?;
                     self.end_newline = text.ends_with('\n');
                 }
                 SoftBreak | HardBreak | Rule => {
@@ -463,7 +462,7 @@ where
 /// let parser = Parser::new(markdown_str);
 ///
 /// let mut html_buf = String::new();
-/// help::push_html(&mut html_buf, parser);
+/// html::push_html(&mut html_buf, parser);
 ///
 /// assert_eq!(html_buf, r#"<h1>hello</h1>
 /// <ul>
@@ -479,3 +478,43 @@ where
     HtmlWriter::new(iter, s).run().unwrap();
 }
 
+/// Iterate over an `Iterator` of `Event`s, generate HTML for each `Event`, and
+/// write it out to a writable stream.
+///
+/// **Note**: using this function with an unbuffered writer like a file or socket
+/// will result in poor performance. Wrap these in a
+/// [`BufWriter`](https://doc.rust-lang.org/std/io/struct.BufWriter.html) to
+/// prevent unnecessary slowdowns.
+///
+/// # Examples
+///
+/// ```
+/// use pulldown_cmark::{html, Parser};
+/// use std::io::Cursor;
+///
+/// let markdown_str = r#"
+/// hello
+/// =====
+///
+/// * alpha
+/// * beta
+/// "#;
+/// let mut bytes = Vec::new();
+/// let parser = Parser::new(markdown_str);
+///
+/// html::write_html(Cursor::new(&mut bytes), parser);
+///
+/// assert_eq!(&String::from_utf8_lossy(&bytes)[..], r#"<h1>hello</h1>
+/// <ul>
+/// <li>alpha</li>
+/// <li>beta</li>
+/// </ul>
+/// "#);
+/// ```
+pub fn write_html<'a, I, W>(writer: W, iter: I) -> io::Result<()>
+where
+    I: Iterator<Item = Event<'a>>,
+    W: Write,
+{
+    HtmlWriter::new(iter, WriteWrapper(writer)).run()
+}

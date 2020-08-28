@@ -6,7 +6,6 @@ extern crate pulldown_cmark;
 mod help;
 mod cli;
 mod blog;
-mod html;
 
 use std::fs;
 use std::collections::HashSet;

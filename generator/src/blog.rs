@@ -4,10 +4,8 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use yaml_rust::{YamlLoader};
 use chrono::{NaiveDate};
-use pulldown_cmark::{Options, Parser};
+use pulldown_cmark::{Options, Parser, html};
 use tera::{Context, Tera};
-
-use crate::html;
 
 #[derive(Debug,Default)]
 pub struct Blog {
