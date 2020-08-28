@@ -156,9 +156,15 @@ where
                     self.end_newline = text.ends_with('\n');
                 }
                 Code(text) => {
-                    self.write("<code>")?;
-                    escape_html(&mut self.writer, &text)?;
-                    self.write("</code>")?;
+                    if text.as_bytes()[0] == b'^' {
+                        self.write("<d-math>")?;
+                        escape_html(&mut self.writer, &text[1..])?;
+                        self.write("</d-math>")?;
+                    } else {
+                        self.write("<d-code language=\"clike\">")?;
+                        escape_html(&mut self.writer, &text)?;
+                        self.write("</d-code>")?;
+                    }
                 }
                 Html(html) => {
                     self.write(&html)?;
@@ -258,14 +264,18 @@ where
                     CodeBlockKind::Fenced(info) => {
                         let lang = info.split(' ').next().unwrap();
                         if lang.is_empty() {
-                            self.write("<pre><code>")
+                            self.write("<d-code block=\"\" language=\"clike\">")
                         } else {
-                            self.write("<pre><code class=\"language-")?;
-                            escape_html(&mut self.writer, lang)?;
-                            self.write("\">")
+                            if lang == "^" {
+                                self.write("<d-math block=\"\">\n")                          
+                            } else {                            
+                                self.write("<d-code block=\"\" language=\"")?;
+                                escape_html(&mut self.writer, lang)?;
+                                self.write("\">\n")
+                            }
                         }
                     }
-                    CodeBlockKind::Indented => self.write("<pre><code>"),
+                    CodeBlockKind::Indented => self.write("<d-code language=\"clike\">"),
                 }
             }
             Tag::List(Some(1)) => {
@@ -380,8 +390,18 @@ where
             Tag::BlockQuote => {
                 self.write("</blockquote>\n")?;
             }
-            Tag::CodeBlock(_) => {
-                self.write("</code></pre>\n")?;
+            Tag::CodeBlock(info) => {
+                match info {
+                    CodeBlockKind::Fenced(info) => {
+                        let lang = info.split(' ').next().unwrap();
+                        if lang == "^" {
+                            self.write("</d-math>\n")?;
+                        } else {
+                            self.write("</d-code>\n")?;
+                        }
+                    }
+                    CodeBlockKind::Indented => self.write("</d-code>\n")?
+                }
             }
             Tag::List(Some(_)) => {
                 self.write("</ol>\n")?;

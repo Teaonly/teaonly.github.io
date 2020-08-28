@@ -7,9 +7,14 @@ target: artical
 date: 2019-10-10
 -->
 
-Hello World This ia line
+python code:
 
+math example:
 
-__Hello__ world
+```^
+a = c^2 + d_y
 
+```
 
+> Hello Worlding
+> hahah

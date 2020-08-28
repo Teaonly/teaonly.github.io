@@ -5,7 +5,7 @@ use regex::Regex;
 use yaml_rust::{YamlLoader};
 use chrono::{NaiveDate};
 use pulldown_cmark::{Options, Parser, html};
-use tera::{Context, Tera};
+use tera::{Context};
 
 #[derive(Debug,Default)]
 pub struct Blog {
