@@ -27,6 +27,7 @@ use crate::strings::CowStr;
 
 pub enum ReferenceLabel<'a> {
     Link(CowStr<'a>),
+    Citation(CowStr<'a>),
     Footnote(CowStr<'a>),
 }
 

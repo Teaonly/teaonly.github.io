@@ -182,6 +182,11 @@ where
                         self.write("\n<hr />\n")?;
                     }
                 }
+                CitationReference(key) => {
+                    self.write("<d-cite key=\"")?;
+                    escape_html(&mut self.writer, &key)?;
+                    self.write("\"></d-cite>")?;
+                }                
                 FootnoteReference(name) => {
                     let len = self.numbers.len() + 1;
                     self.write("<sup class=\"footnote-reference\"><a href=\"#")?;
@@ -450,6 +455,9 @@ where
                 }
                 SoftBreak | HardBreak | Rule => {
                     self.write(" ")?;
+                }
+                CitationReference(name) => {
+                    write!(&mut self.writer, "[{}]", name)?;
                 }
                 FootnoteReference(name) => {
                     let len = self.numbers.len() + 1;

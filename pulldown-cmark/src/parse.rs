@@ -160,6 +160,9 @@ pub enum Event<'a> {
     /// by an event with a `Tag::FootnoteDefinition` tag. Definitions and references to them may
     /// occur in any order.
     FootnoteReference(CowStr<'a>),
+    /// citation to a bibliography list
+    CitationReference(CowStr<'a>),
+
     /// A soft line break.
     SoftBreak,
     /// A hard line break.
@@ -223,6 +226,7 @@ enum ItemBody {
     Link(LinkIndex),
     Image(LinkIndex),
     FootnoteReference(CowIndex),
+    CitationReference(CowIndex),
     TaskListMarker(bool), // true for checked
 
     Rule,
@@ -1712,6 +1716,9 @@ fn scan_link_label<'text, 'tree>(
     let pair = if b'^' == bytes[1] {
         let (byte_index, cow) = scan_link_label_rest(&text[2..], &linebreak_handler)?;
         (byte_index + 2, ReferenceLabel::Footnote(cow))
+    } else if b'@' == bytes[1] {
+        let (byte_index, cow) = scan_link_label_rest(&text[2..], &linebreak_handler)?;
+        (byte_index + 2, ReferenceLabel::Citation(cow))
     } else {
         let (byte_index, cow) = scan_link_label_rest(&text[1..], &linebreak_handler)?;
         (byte_index + 1, ReferenceLabel::Link(cow))
@@ -2177,12 +2184,22 @@ impl<'a> Parser<'a> {
                                 }
                             };
 
-                            // see if it's a footnote reference
+                            // see if it's a footnote/cite reference
                             if let Some((ReferenceLabel::Footnote(l), end)) = label {
                                 self.tree[tos.node].next = node_after_link;
                                 self.tree[tos.node].child = None;
                                 self.tree[tos.node].item.body =
                                     ItemBody::FootnoteReference(self.allocs.allocate_cow(l));
+                                self.tree[tos.node].item.end = end;
+                                prev = Some(tos.node);
+                                cur = node_after_link;
+                                self.link_stack.clear();
+                                continue;
+                            } else if let Some((ReferenceLabel::Citation(c), end)) = label {
+                                self.tree[tos.node].next = node_after_link;
+                                self.tree[tos.node].child = None;
+                                self.tree[tos.node].item.body =
+                                    ItemBody::CitationReference(self.allocs.allocate_cow(c));
                                 self.tree[tos.node].item.end = end;
                                 prev = Some(tos.node);
                                 cur = node_after_link;
@@ -2738,6 +2755,9 @@ fn item_to_event<'a>(item: Item, text: &'a str, allocs: &Allocations<'a>) -> Eve
         ItemBody::HardBreak => return Event::HardBreak,
         ItemBody::FootnoteReference(cow_ix) => {
             return Event::FootnoteReference(allocs[cow_ix].clone())
+        }
+        ItemBody::CitationReference(cow_ix) => {
+            return Event::CitationReference(allocs[cow_ix].clone())
         }
         ItemBody::TaskListMarker(checked) => return Event::TaskListMarker(checked),
         ItemBody::Rule => return Event::Rule,

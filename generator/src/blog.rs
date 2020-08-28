@@ -70,7 +70,7 @@ pub fn convert(mkdoc: &str) -> String {
     options.insert(Options::ENABLE_FOOTNOTES);
     options.insert(Options::ENABLE_TASKLISTS);
     options.insert(Options::ENABLE_TABLES);
-    let parser = Parser::new_ext(mkdoc, Options::empty());
+    let parser = Parser::new_ext(mkdoc, options);
 
     let mut htdoc = String::new();
     html::push_html(&mut htdoc, parser);
