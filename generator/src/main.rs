@@ -17,6 +17,7 @@ fn create_blog_index(tera: Tera, target_dir: &PathBuf,  blogs: &mut Vec<blog::Bl
     let mut strbuf = String::new();
 
     blogs.sort();
+    blogs.reverse();
     for ref blog in blogs {
 
         let href = format!("/blog/{}", blog.code);
@@ -92,10 +93,10 @@ fn main() {
             fs::create_dir( target_dir.join("blog").join(&blog.code) ).unwrap();
             fs::write(target_dir.join("blog").join(&blog.code).join("index.html"), &full_html).unwrap();
 
-            // copy resource files from root to target 
+            // copy resource files from root to target
             // TODO
 
-            all_blog.push(blog_short);            
+            all_blog.push(blog_short);
         } else {
             panic!( format!("Parse blog {} error!", blog_path.to_str().unwrap()));
         }
@@ -109,5 +110,5 @@ fn main() {
 
 
     /* ====== step.3 create other pages*/
-    
+
 }
