@@ -25,7 +25,8 @@ componentsConfig.plugins.push(
     headers: {
       "Access-Control-Allow-Origin": "*"
     },
-    port: 8088
+    host: "0.0.0.0",
+    port: 2014
   })
 );
 

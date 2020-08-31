@@ -1,11 +1,10 @@
-use clap::{crate_authors, crate_description, crate_version, App, AppSettings, Arg, SubCommand};
+use clap::{crate_authors, crate_description, crate_version, App, Arg};
 
 pub fn build_cli() -> App<'static, 'static> {
     App::new("gen")
         .version(crate_version!())
         .author(crate_authors!())
         .about(crate_description!())
-        .setting(AppSettings::SubcommandRequiredElseHelp)
         .arg(
             Arg::with_name("root")
                 .short("r")
@@ -14,8 +13,12 @@ pub fn build_cli() -> App<'static, 'static> {
                 .default_value("site")
                 .help("Directory to use as root of project")
         )
-        .subcommands(vec![
-            SubCommand::with_name("build")
-                .about("Deletes the output directory if there is one and builds the site")
-        ])
+        .arg(
+            Arg::with_name("target")
+                .short("t")
+                .long("target")
+                .takes_value(true)
+                .default_value("public")
+                .help("Directory to use as target of project")
+        )
 }

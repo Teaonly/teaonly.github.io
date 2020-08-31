@@ -7,9 +7,25 @@
     <script src="/template.v2.js"></script>
 </head>
 
-<body>
+<body>    
     <distill-header></distill-header>
-   
+    <d-front-matter>
+        <script id='distill-front-matter' type="text/json">{
+            "published": "{{ published_date }}",
+            "authors": [
+                {
+                "author":"Teaonly",
+                "authorURL":"https://teaonly.github.io/",
+                "affiliations": [{"name": "teaonly.info"}]
+                }
+            ],
+            "katex": {
+                "delimiters": [
+                {"left": "$$", "right": "$$", "display": false}
+                ]
+            }
+        }</script>
+    </d-front-matter>
     <d-title>
         <h1>{{ title }}</h1>
         <p>{{ desc }}</p>
