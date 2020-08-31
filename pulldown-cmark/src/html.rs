@@ -92,7 +92,7 @@ where
     }
 }
 
-struct HtmlWriter<'a, I, W> {
+struct HtmlWriter<I, W> {
     /// Iterator supplying events.
     iter: I,
 
@@ -105,10 +105,12 @@ struct HtmlWriter<'a, I, W> {
     table_state: TableState,
     table_alignments: Vec<Alignment>,
     table_cell_index: usize,
-    numbers: HashMap<CowStr<'a>, usize>,
+
+    /// help data for building footnotes    
+    notes: HashMap<String, String>,
 }
 
-impl<'a, I, W> HtmlWriter<'a, I, W>
+impl<'a, I, W> HtmlWriter<I, W>
 where
     I: Iterator<Item = Event<'a>>,
     W: StrWrite,
@@ -121,7 +123,7 @@ where
             table_state: TableState::Head,
             table_alignments: vec![],
             table_cell_index: 0,
-            numbers: HashMap::new(),
+            notes: HashMap::new(),
         }
     }
 
@@ -187,14 +189,16 @@ where
                     escape_html(&mut self.writer, &key)?;
                     self.write("\"></d-cite>")?;
                 }                
-                FootnoteReference(name) => {
-                    let len = self.numbers.len() + 1;
-                    self.write("<sup class=\"footnote-reference\"><a href=\"#")?;
-                    escape_html(&mut self.writer, &name)?;
-                    self.write("\">")?;
-                    let number = *self.numbers.entry(name).or_insert(len);
-                    write!(&mut self.writer, "{}", number)?;
-                    self.write("</a></sup>")?;
+                FootnoteReference(name) => {                    
+                    if let Some(ref _note) = self.notes.get(&name.to_string()) {
+                        let note = _note.to_string();
+                        self.write("<d-footnote id=\"")?;
+                        write!(&mut self.writer, "{}\">", name)?;
+                        self.write(&note)?;
+                        self.write("</d-footnote>")?;
+                    } else {
+                        panic!("refering to an undefined footnote!{}", name.to_string())
+                    }
                 }
                 TaskListMarker(true) => {
                     self.write("<input disabled=\"\" type=\"checkbox\" checked=\"\"/>\n")?;
@@ -338,7 +342,7 @@ where
                 self.write("<img src=\"")?;
                 escape_href(&mut self.writer, &dest)?;
                 self.write("\" alt=\"")?;
-                self.raw_text()?;
+                self.raw_text_image()?;
                 if !title.is_empty() {
                     self.write("\" title=\"")?;
                     escape_html(&mut self.writer, &title)?;
@@ -346,17 +350,7 @@ where
                 self.write("\" />")
             }
             Tag::FootnoteDefinition(name) => {
-                if self.end_newline {
-                    self.write("<div class=\"footnote-definition\" id=\"")?;
-                } else {
-                    self.write("\n<div class=\"footnote-definition\" id=\"")?;
-                }
-                escape_html(&mut self.writer, &*name)?;
-                self.write("\"><sup class=\"footnote-definition-label\">")?;
-                let len = self.numbers.len() + 1;
-                let number = *self.numbers.entry(name).or_insert(len);
-                write!(&mut self.writer, "{}", number)?;
-                self.write("</sup>")
+                self.raw_text_footnote(name)
             }
         }
     }
@@ -429,16 +423,16 @@ where
             Tag::Link(_, _, _) => {
                 self.write("</a>")?;
             }
-            Tag::Image(_, _, _) => (), // shouldn't happen, handled in start
-            Tag::FootnoteDefinition(_) => {
-                self.write("</div>\n")?;
-            }
+
+            // shouldn't happen, handled in start
+            Tag::Image(_, _, _) => (), 
+            Tag::FootnoteDefinition(_) => (), 
         }
         Ok(())
     }
 
-    // run raw text, consuming end tag
-    fn raw_text(&mut self) -> io::Result<()> {
+    // run raw text, consuming end tag for image
+    fn raw_text_image(&mut self) -> io::Result<()> {
         let mut nest = 0;
         while let Some(event) = self.iter.next() {
             match event {
@@ -460,14 +454,50 @@ where
                     write!(&mut self.writer, "[{}]", name)?;
                 }
                 FootnoteReference(name) => {
-                    let len = self.numbers.len() + 1;
-                    let number = *self.numbers.entry(name).or_insert(len);
-                    write!(&mut self.writer, "[{}]", number)?;
+                    write!(&mut self.writer, "[{}]", name)?;
                 }
                 TaskListMarker(true) => self.write("[x]")?,
                 TaskListMarker(false) => self.write("[ ]")?,
             }
         }
+        Ok(())
+    }
+
+    // run raw text, consuming end tag for footnote
+    fn raw_text_footnote(&mut self, name: CowStr<'a>) -> io::Result<()> {
+        let mut strbuffer = String::new();
+
+        let mut nest = 0;
+        while let Some(event) = self.iter.next() {
+            match event {
+                Start(_) => nest += 1,
+                End(_) => {
+                    if nest == 0 {
+                        break;
+                    }
+                    nest -= 1;
+                }
+                Text(text) => {
+                    escape_html(&mut strbuffer, &text)?;
+                    //self.end_newline = text.ends_with('\n');
+                }
+                Code(text) => {
+                    if text.as_bytes()[0] == b'^' {
+                        StrWrite::write_str(&mut strbuffer, "<d-math>")?;
+                        escape_html(&mut strbuffer, &text[1..])?;
+                        StrWrite::write_str(&mut strbuffer, "</d-math>")?;
+                    } else {
+                        StrWrite::write_str(&mut strbuffer, "<d-code language=\"clike\">")?;
+                        escape_html(&mut strbuffer, &text)?;
+                        StrWrite::write_str(&mut strbuffer, "</d-code>")?;
+                    }
+                }
+                _ => {
+                    panic!("Can't run here from markdwon!")
+                }
+            }
+        }
+        self.notes.insert(name.to_string(), strbuffer);
         Ok(())
     }
 }

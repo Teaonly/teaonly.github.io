@@ -7,11 +7,11 @@ target: artical
 date: 2019-10-10
 -->
 
-Here's a simple footnote, and here's a longer one. hello [@hahah] world.  kakak [^bignote] haha.
-
-[^bignote]: Here's one with multiple paragraphs and code.
 
 
-Indent paragraphs to include them in the footnote.
+[^bignote]: Here's one with multiple paragraphs and code `^ c^2 = a^2 + b^2` .
+
+
+Go away away , this is ref [^bignote] . Indent paragraphs to include them in the footnote.
 
 # lasd
