@@ -47,6 +47,8 @@ lazy_static! {
 }
 
 pub fn parse(path: &PathBuf) -> Result<Blog, String> {
+    let file_code = path.file_name().unwrap().to_str().unwrap().to_string();
+
     let all_content = fs::read_to_string(path.to_str().unwrap()).expect("Can't open file");
     if !INFO_RE.is_match(&all_content) {
         panic!(format!("Can't find front matter inside markdown for {}", path.to_str().unwrap()));
@@ -62,7 +64,8 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
 
     // fill blog's info and content
     let mut blog: Blog = Default::default();
-    blog.code = front_doc["code"].as_str().unwrap().to_string();
+    //blog.code = front_doc["code"].as_str().unwrap().to_string();
+    blog.code = file_code;
     blog.title = front_doc["title"].as_str().unwrap().to_string();
     blog.desc = front_doc["desc"].as_str().unwrap().to_string();
     if !front_doc["template"].is_badvalue() {
@@ -78,7 +81,7 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
     if let Ok(pubdate) = NaiveDate::parse_from_str( front_doc["date"].as_str().unwrap(), "%Y-%m-%d") {
         blog.date = pubdate.format("%-d %B, %C%y").to_string();
     } else {
-        panic!( format!("Can't parse date from front matter of  {}", path.to_str().unwrap()));
+        panic!( format!("Can't parse date from front matter of {}", path.to_str().unwrap()));
     }
     if !front_doc["tags"].is_badvalue() {
         let tags = front_doc["tags"].as_vec().unwrap();

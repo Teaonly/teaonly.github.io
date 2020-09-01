@@ -1,5 +1,4 @@
 <!--
-code: distill-introduce
 title: 什么是distill风格的在线学术文章
 desc: 本文简单介绍了 distill.pub 网站, distill 风格文章以及 为何要倡导做一名Distiller. 
 template: blog
@@ -85,6 +84,8 @@ int main() {
 ### 图像文件显示的支持 (TODO)
 
 测试一下图像文件的使用
+
+![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png) Hello World
 
 
 ### 内置复杂的交互案例 (TODO)

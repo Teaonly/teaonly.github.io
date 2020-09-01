@@ -72,6 +72,9 @@ fn main() {
     let mut all_code = HashSet::<String>::new();
     let mut all_blog: Vec<blog::Blog> = vec![];
     for ref blog_path in all_blog_path {
+
+        println!("Parsing markdown file: {:?}", blog_path);
+
         if let Ok(blog) = blog::parse(blog_path) {
             if all_code.contains( &blog.code ) {
                 panic!( format!("Repeated blog's code from {}!", blog_path.to_str().unwrap()));
@@ -111,4 +114,5 @@ fn main() {
 
     /* ====== step.3 create other pages*/
 
+    println!("Building site done!");
 }
