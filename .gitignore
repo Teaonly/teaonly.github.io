@@ -1,4 +1,6 @@
-distill/dist/
 public/
+distill/dist/
 generator/Cargo.lock
 generator/target/
+ezmark/Cargo.lock
+ezmark/target/
