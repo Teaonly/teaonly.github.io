@@ -29,6 +29,7 @@ lazy_static! {
 
 pub fn parse(path: &PathBuf) -> Result<Blog, String> {
     let file_code = path.file_name().unwrap().to_str().unwrap().to_string();
+    let file_code = &file_code[0..(file_code.len()-3)];
 
     let all_content = fs::read_to_string(path.to_str().unwrap()).expect("Can't open file");
     if !INFO_RE.is_match(&all_content) {
@@ -46,7 +47,7 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
     // fill blog's info and content
     let mut blog: Blog = Default::default();
     //blog.code = front_doc["code"].as_str().unwrap().to_string();
-    blog.code = file_code;
+    blog.code = file_code.to_string();
     blog.title = front_doc["title"].as_str().unwrap().to_string();
     blog.desc = front_doc["desc"].as_str().unwrap().to_string();
     if !front_doc["template"].is_badvalue() {

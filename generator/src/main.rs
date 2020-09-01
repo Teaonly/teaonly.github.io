@@ -98,7 +98,13 @@ fn main() {
             fs::write(target_dir.join("blog").join(&blog.code).join("index.html"), &full_html).unwrap();
 
             // copy resource files from root to target
-            // TODO
+            let resource_pattern = root_dir.to_string() + "/content/blog/" + &blog.code + "/*"; 
+            let resource_glob = glob(&resource_pattern).expect("Invalid glob");
+            let all_resource: Vec<_> = resource_glob.filter_map(|e| e.ok()).collect();
+            for ref res in all_resource {
+                let dst = target_dir.join("blog").join(&blog.code).join( res.file_name().unwrap().to_str().unwrap() );
+                fs::copy(res, dst).unwrap();
+            }
 
             all_blog.push(blog_short);
         } else {
