@@ -10,19 +10,20 @@ mod blog;
 use std::fs;
 use std::collections::HashSet;
 use std::path::PathBuf;
+use chrono::{NaiveDate};
 use glob::glob;
 use tera::Tera;
 
 fn create_blog_index(tera: Tera, target_dir: &PathBuf,  blogs: &mut Vec<blog::Blog>) -> Result<(), String> {
     let mut strbuf = String::new();
 
-    blogs.sort();
-    blogs.reverse();
+    blogs.sort_by(|a,b|b.date.cmp(&a.date));
     for ref blog in blogs {
 
         let href = format!("/blog/{}", blog.code);
+        let date = NaiveDate::parse_from_str( &blog.date, "%Y-%m-%d").unwrap().format("%-d %B, %C%y").to_string();
         strbuf.push_str(&format!("<li><a href={}> {} </a>\n", href, blog.title));
-        strbuf.push_str(&format!("<figcaption><b>{}</b></figcaption>\n", blog.date));
+        strbuf.push_str(&format!("<figcaption><b>{}</b></figcaption>\n", date));
         strbuf.push_str(&format!("<figcaption>{}</figcaption>\n", blog.desc));
         strbuf.push_str("</li>\n");
     }

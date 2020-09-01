@@ -1,4 +1,3 @@
-use std::cmp::Ordering;
 use std::fs;
 use std::path::PathBuf;
 use lazy_static::lazy_static;
@@ -8,7 +7,7 @@ use chrono::{NaiveDate};
 use pulldown_cmark::{Options, Parser, html};
 use tera::{Context};
 
-#[derive(Debug,Default,Eq)]
+#[derive(Debug,Default)]
 pub struct Blog {
     // front matter
     pub code:       String,
@@ -22,24 +21,6 @@ pub struct Blog {
     // markdown content
     pub raw:        String,
 }
-impl Ord for Blog {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.date.cmp(&other.date)
-    }
-}
-
-impl PartialOrd  for Blog {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.date.cmp(&other.date))
-    }
-}
-
-impl PartialEq for Blog {
-    fn eq(&self, other: &Self) -> bool {
-        self.code == other.code
-    }
-}
-
 
 lazy_static! {
     static ref INFO_RE: Regex =
@@ -78,8 +59,9 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
     } else {
         blog.target = format!("article");
     }
-    if let Ok(pubdate) = NaiveDate::parse_from_str( front_doc["date"].as_str().unwrap(), "%Y-%m-%d") {
-        blog.date = pubdate.format("%-d %B, %C%y").to_string();
+    if let Ok(_pubdate) = NaiveDate::parse_from_str( front_doc["date"].as_str().unwrap(), "%Y-%m-%d") {
+        //blog.date = pubdate.format("%-d %B, %C%y").to_string();
+        blog.date = front_doc["date"].as_str().unwrap().to_string();
     } else {
         panic!( format!("Can't parse date from front matter of {}", path.to_str().unwrap()));
     }
