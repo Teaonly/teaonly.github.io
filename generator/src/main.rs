@@ -19,7 +19,9 @@ fn create_blog_index(tera: Tera, target_dir: &PathBuf,  blogs: &mut Vec<blog::Bl
 
     blogs.sort_by(|a,b|b.date.cmp(&a.date));
     for ref blog in blogs {
-
+        if blog.todo {
+            continue;
+        }
         let href = format!("/blog/{}", blog.code);
         let date = NaiveDate::parse_from_str( &blog.date, "%Y-%m-%d").unwrap().format("%-d %B, %C%y").to_string();
         strbuf.push_str(&format!("<li><a href={}> {} </a>\n", href, blog.title));
@@ -88,6 +90,7 @@ fn main() {
             blog_short.desc = blog.desc.clone();
             blog_short.date = blog.date.clone();
             blog_short.code = blog.code.clone();
+            blog_short.todo = blog.todo;
 
             // do convert and render
             let html = blog::convert(&blog.raw);

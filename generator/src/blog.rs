@@ -18,6 +18,7 @@ pub struct Blog {
     pub date:       String,
 
     // optional filed
+    pub todo:       bool,
     pub bib:        String,
     pub tags:       Vec<String>,
 
@@ -62,6 +63,11 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
         blog.target = front_doc["target"].as_str().unwrap().to_string();
     } else {
         blog.target = format!("article");
+    }
+    if front_doc["todo"].is_badvalue() {
+        blog.todo = false;
+    } else {
+        blog.todo = front_doc["todo"].as_bool().unwrap();
     }
     if let Ok(_pubdate) = NaiveDate::parse_from_str( front_doc["date"].as_str().unwrap(), "%Y-%m-%d") {
         //blog.date = pubdate.format("%-d %B, %C%y").to_string();

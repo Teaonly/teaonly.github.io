@@ -4,6 +4,7 @@ desc: C哥总共上线过两款业余产品, 通过Google广告, 两年内收入
 template: blog
 target: artical
 date: 2020-04-13
+todo: true
 -->
 
 ### 编程开发中的抽象
