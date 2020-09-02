@@ -339,7 +339,7 @@ where
                 self.write("\">")
             }
             Tag::Image(_link_type, dest, title) => {
-                self.write("<figure><img src=\"")?;
+                self.write("<d-figure><img src=\"")?;
                 escape_href(&mut self.writer, &dest)?;
                 self.write("\" alt=\"")?;
                 self.raw_text_image()?;
@@ -347,7 +347,7 @@ where
                     self.write("\" title=\"")?;
                     escape_html(&mut self.writer, &title)?;
                 }
-                self.write("\" /></figure>")
+                self.write("\" /></d-figure>")
             }
             Tag::FootnoteDefinition(name) => {
                 self.raw_text_footnote(name)

@@ -4,6 +4,7 @@ desc: 本文简单介绍了 distill.pub 网站, distill 风格文章以及 为�
 template: blog
 target: artical
 date: 2019-10-10
+bib: bibliography.bib
 -->
 
 ### Distill.pub网站介绍
@@ -73,11 +74,13 @@ int main() {
 }
 ```
 
-### 脚注(footnote)支持
+### 引用和脚注(footnote)支持
+
+Distill模板支持引用 Citation , 这里采用了\[@xxx\]的扩展，如论文参考[@dong2014image]，多篇参考[@gregor2015draw].
 
 [^note1]: 这是一个简单的单行脚注格式, 自动排版在行文的最后，支持行内`^ c^2 = a^2 + b^2 `数学公式。
 
-扩展了Markdown支持distill风格的脚注[^note1], 也是标准的学术格式。
+扩展了Markdown支持distill风格的脚注[^note1], 也是标准的学术论文形式。
 
 <aside> 这是一个放置在文档右边标注的例子 </aside>
 
@@ -85,7 +88,8 @@ int main() {
 
 测试一下图像文件的使用
 
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png) Hello World
+![Image of Yaktocat](https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png)
+
 
 
 ### 内置复杂的交互案例 (TODO)

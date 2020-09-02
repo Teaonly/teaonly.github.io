@@ -16,6 +16,9 @@ pub struct Blog {
     pub template:   String,
     pub target:     String,
     pub date:       String,
+
+    // optional filed
+    pub bib:        String,
     pub tags:       Vec<String>,
 
     // markdown content
@@ -66,6 +69,11 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
     } else {
         panic!( format!("Can't parse date from front matter of {}", path.to_str().unwrap()));
     }
+
+    if !front_doc["bib"].is_badvalue() {
+        blog.bib = front_doc["bib"].as_str().unwrap().to_string();
+    }
+
     if !front_doc["tags"].is_badvalue() {
         let tags = front_doc["tags"].as_vec().unwrap();
         for tag in tags {
@@ -97,6 +105,9 @@ pub fn render(tera: &mut tera::Tera, htdoc: &str, blog: &Blog) -> Result<String,
     context.insert("desc", &blog.desc);
     context.insert("published_date", &blog.date);
     context.insert("markdown", htdoc);
+    if blog.bib != "" {
+        context.insert("bib", &blog.bib);
+    }
 
     let result = tera.render("blog.html", &context);
     if result.is_err() {

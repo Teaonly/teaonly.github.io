@@ -38,9 +38,13 @@
 </d-article>
 
     <d-appendix> 
-        <d-footnote-list></d-footnote-list>
-        <d-citation-list></d-citation-list>
+        <d-footnote-list></d-footnote-list>    
+        <d-citation-list></d-citation-list>       
     </d-appendix>
-
+ 
     <distill-footer></distill-footer>
+
+    {% if bib %}
+    <d-bibliography src="{{ bib }}"></d-bibliography>        
+    {% endif %}    
 </body>
