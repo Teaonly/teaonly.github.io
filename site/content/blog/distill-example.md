@@ -76,7 +76,7 @@ int main() {
 
 ### 引用和脚注(footnote)支持
 
-Distill模板支持引用 Citation , 这里采用了\[@xxx\]的扩展，如论文参考[@dong2014image]，多篇参考[@gregor2015draw].
+Distill模板支持引用 Citation , 这里采用了\[@xxx\]的扩展，如论文参考[@dong2014image]，多篇参考[@dong2014image,gregor2015draw].
 
 [^note1]: 这是一个简单的单行脚注格式, 自动排版在行文的最后，支持行内`^ c^2 = a^2 + b^2 `数学公式。
 
@@ -84,16 +84,15 @@ Distill模板支持引用 Citation , 这里采用了\[@xxx\]的扩展，如论�
 
 <aside> 这是一个放置在文档右边标注的例子 </aside>
 
-### 图像文件显示的支持 (TODO)
+### 图像文件显示的支持
 
-测试一下图像文件的使用
+测试一下图像文件的使用，统一采用占用独立一行显示方式。
 
-![Image of Yaktocat](https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png)
-
+![Image of Google](https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png) 
 
 
 ### 内置复杂的交互案例 (TODO)
 
-Distill.pub倡导大量应用HTML5可视化交互，这是distill非常显著的特点之一，期刊收入的文章，几乎都有非常专业和漂亮的交互配图. 
-本网站也对Markdown进行了内置JavaScript扩展. 
+在线文章的最大好处，就是可以充分利用Web强大的交互特点，因此Distill.pub网站录用的文章，都配置了精美的交互可视化案例。
+如果可以的话，我认为在打印成pdf格式，交互图像上应该附上交互操作网址的二维码。
 

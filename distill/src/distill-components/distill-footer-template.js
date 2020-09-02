@@ -53,9 +53,7 @@ export const footerTemplate = `
 
 <div class='footer-container'>
 
-  <a href="/" class="logo">
-    Teaonly
-  </a> 技术评论和备忘, 遵循 MIT 许可证
+  Teaonly 做一个有趣的开发者, 在路上 
 
   <div class="nav">
     <a href="https://github.com/teaonly">GitHub</a>
