@@ -8994,7 +8994,8 @@ distill-header .nav a {
   </a>
   <nav class="nav">
     <a href="/">博客</a>
-    <a href="/memo/">备忘</a>
+    <a href="/bookmark/">备忘</a>
+    <a href="/projects/">项目</a>
     <a href="/about/">关于</a>
   </nav>
 </div>
@@ -9139,9 +9140,7 @@ distill-header .nav a {
 
 <div class='footer-container'>
 
-  <a href="/" class="logo">
-    Teaonly
-  </a> 技术评论和备忘, 遵循 MIT 许可证
+  Teaonly 做一个有趣的开发者, 在路上 
 
   <div class="nav">
     <a href="https://github.com/teaonly">GitHub</a>
