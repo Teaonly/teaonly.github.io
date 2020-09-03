@@ -8989,13 +8989,11 @@ distill-header .nav a {
 }
 </style>
 <div class="content">
-  <a href="/" class="logo">
+  <a class="logo">
     Teaonly的个人网站
   </a>
   <nav class="nav">
-    <a href="/">博客</a>
-    <a href="/bookmark/">备忘</a>
-    <a href="/projects/">项目</a>
+    <a href="/">文章</a>
     <a href="/about/">关于</a>
   </nav>
 </div>
@@ -9139,15 +9137,12 @@ distill-header .nav a {
 </style>
 
 <div class='footer-container'>
-
-  Teaonly 做一个有趣的开发者, 在路上 
-
+  <a class="logo"> 联系方式</a>
   <div class="nav">
     <a href="https://github.com/teaonly">GitHub</a>
     <a href="https://weibo.com/teaonly">微博</a>
     <a href="https://twitter.com/achangzhou">Twitter</a>
   </div>
-
 </div>
 
 `;
