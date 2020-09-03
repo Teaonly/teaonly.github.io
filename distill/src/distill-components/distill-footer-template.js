@@ -52,15 +52,12 @@ export const footerTemplate = `
 </style>
 
 <div class='footer-container'>
-
-  Teaonly 做一个有趣的开发者, 在路上 
-
+  <a class="logo"> 联系方式</a>
   <div class="nav">
     <a href="https://github.com/teaonly">GitHub</a>
     <a href="https://weibo.com/teaonly">微博</a>
     <a href="https://twitter.com/achangzhou">Twitter</a>
   </div>
-
 </div>
 
 `;
