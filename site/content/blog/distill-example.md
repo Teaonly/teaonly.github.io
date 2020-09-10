@@ -12,32 +12,31 @@ sveltes:
 
 ### Distill.pub网站介绍
 
-[Distill.pub](https://distill.pub/) 是一家关于机器学习的线上学术期刊, 它由 Google, OpenAI 等企业赞助支持, 
-采用开源方式进行文章录用以及编辑, 编委由一批机器学习领域资深的科学家组成. 
-Distill.pub 特别之处在于它主要录用所谓 "distill" 风格的文章, 具体解释可以参考, 这篇文章: [学术研究的债务 ](https://distill.pub/2017/research-debt/). 
+[Distill.pub](https://distill.pub/) 是一家关于机器学习的线上学术期刊, 它由 Google, OpenAI 等企业赞助发行, 
+期刊采用开源方式进行录用及编辑, 编委由一批领域资深的科学家组成. 
+Distill.pub 特别之处在于: 它主要录用所谓 "distill" 风格的文章, 具体解释可以参考这篇文章: [学术研究的债务 ](https://distill.pub/2017/research-debt/). 
 
 Distill.pub 的文章特点包括：
 
-* 文章主题, 必须针对的是机器学习领域中较深入的课题, 较复杂的应用
-* 文章内容，必须深入浅出，思路清晰且具体，提倡将问题讲透, 讲清楚，偿还所谓的 "Research Debt" 
+* 文章主题, 针对的是机器学习领域中较深入和复杂的课题
+* 文章内容，深入浅出，思路清晰具体，提倡将问题讲透, 偿还所谓的科研债务( Research Debt ) 
 * 大量采用 HTML5 交互以及高质量的配图, 发挥线上学术文章优势
 * 文章排版采用严格的学术论文风格，包括参考文献格式/DOI等
-* 期刊采用开源形式发表文章，具体可以参考网站的[github](https://github.com/distillpub)
+* 期刊采用开源形式发表文章，每篇文章的编辑记录和源代码都是公开的，具体可以参考网站的 [github](https://github.com/distillpub)
 
-从上面的这些特点, 可以看出网站录用的既不是知乎体也不是自媒体形式. 网站录用的是严肃的学术科研文章, 拥有严格的编辑和编委, 
-文章主题更多是面向学术解释和教学. 
+从上面的这些特点可以看出，网站录用的是严肃高质量的学术文章, 并且拥有严格高要求的编辑团队, 明显区别于公众号/知乎/Medium的"科普"内容。这也是Distill.pub 文章精彩的原因，受到了大量的机器学习研究者的关注和追捧。
 
 ### 什么是 Distiller ?
 
-Distill.pub网站倡导撰写这样的文章，并认为这样的文章具备相当的学术价值. 
-[ 学术研究的债务 ](https://distill.pub/2017/research-debt/) 这篇文章鲜明的指出，理论研究者 / 实践工程师以及 **Distiller** 三者都是学术界工作重要的组成者. 
-**Distiller** 的价值就在在于，弥补了传统学术文章的缺陷, 加快了理论和技术的普及和推广, 大大减少了学术研究的学习成本. 
-因此，Distill.pub 对优秀的distill风格的文章, 提供很高的[奖励](https://distill.pub/prize/ )的. 
+Distill.pub 网站倡导撰写类似风格的文章，并认为这样的文章具备相当的学术价值, 网站把那些作者称为 "Distiller".
+[ 学术研究的债务 ](https://distill.pub/2017/research-debt/) 这篇文章鲜明的指出，理论研究者 / 科学实践工程师以及 **Distiller** 三者都是学术界工作重要的组成者. 
+**Distiller** 的价值就在在于，弥补了传统学术文章的缺陷, 加快了理论和创新的普及, 大大减少了学术研究的学习成本. 
+因此，Distill.pub 对优秀的 distill 风格的文章, 提供很不错的[奖励](https://distill.pub/prize/ ). 
 
 ## Distill 风格的 Markdown 格式
 
-本个人网站采用Distill.pub开源的前端模板，开发实现了一个定制化的 distill 风格的 Markdown 渲染器. 
-网站采用 Rust 语言开发, 集成 tera 模板引擎和 pulldown-cmark 解释器等开源工具. 以下是Markdown格式的各种测试案例. 
+我的个人网站采用Distill.pub开源的前端模板，开发实现了一个定制化的 distill 风格的 Markdown 渲染器. 
+网站采用 Rust 语言开发, 集成 tera 模板引擎和 pulldown-cmark 解释器以及Svelte等开源工具. 以下是Markdown格式的各种测试案例. 
 
 ### 数学公式
 
@@ -94,10 +93,11 @@ Distill模板支持引用 Citation , 这里采用了\[@xxx\]的扩展，如论�
 ![Image of Google](https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png) 
 
 
-### 内置复杂的交互案例 (TODO)
+### 内置复杂的交互案例
 
-在线文章的最大好处，就是可以充分利用Web强大的交互特点，因此Distill.pub网站录用的文章，都配置了精美的交互可视化案例。
-如果可以的话，我认为在打印成pdf格式，交互图像上应该附上交互操作网址的二维码。
+在线文章的最大好处，就是可以充分利用Web强大的交互功能，因此Distill.pub网站录用的文章，都配置了精美的交互可视化小程序。
 
 ![](svelte "demo-app-container")
 
+
+我的网站会利用这套工具，撰写和发布distill风格的个人技术/评论文章，如果你感兴趣的话，可以参考 [源代码](https://github.com/Teaonly/teaonly.github.io) .
