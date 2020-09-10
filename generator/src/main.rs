@@ -101,13 +101,18 @@ fn main() {
             fs::write(target_dir.join("blog").join(&blog.code).join("index.html"), &full_html).unwrap();
 
             // copy resource files from root to target
-            let resource_pattern = root_dir.to_string() + "/content/blog/" + &blog.code + "/*"; 
+            let resource_pattern = root_dir.to_string() + "/content/blog/" + &blog.code + "/*";
             let resource_glob = glob(&resource_pattern).expect("Invalid glob");
             let all_resource: Vec<_> = resource_glob.filter_map(|e| e.ok()).collect();
             for ref res in all_resource {
                 let dst = target_dir.join("blog").join(&blog.code).join( res.file_name().unwrap().to_str().unwrap() );
                 fs::copy(res, dst).unwrap();
             }
+
+            // copy sevlet files from source to target
+            {
+                let src = root_dir
+            }            
 
             all_blog.push(blog_short);
         } else {
@@ -121,8 +126,8 @@ fn main() {
     /* ====== step.2 create blog/gist index file*/
     create_blog_index(tera, &target_dir, &mut all_blog).unwrap();
 
-
     /* ====== step.3 create other pages*/
+    // TODO
 
     println!("Building site done!");
 }

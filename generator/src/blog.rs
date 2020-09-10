@@ -20,6 +20,7 @@ pub struct Blog {
     // optional filed
     pub todo:       bool,
     pub bib:        String,
+    pub sveltes:    Vec<(String, String)>,
     pub tags:       Vec<String>,
 
     // markdown content
@@ -80,6 +81,15 @@ pub fn parse(path: &PathBuf) -> Result<Blog, String> {
         blog.bib = front_doc["bib"].as_str().unwrap().to_string();
     }
 
+    if !front_doc["sveltes"].is_badvalue() {
+        let sveltes = front_doc["sveltes"].as_vec().unwrap();
+        for app in sveltes {
+            let div = app["div"].as_str().unwrap().to_string();
+            let app = app["app"].as_str().unwrap().to_string();
+            blog.sveltes.push((div, app));
+        }
+    }
+
     if !front_doc["tags"].is_badvalue() {
         let tags = front_doc["tags"].as_vec().unwrap();
         for tag in tags {
@@ -104,6 +114,14 @@ pub fn convert(mkdoc: &str) -> String {
     htdoc
 }
 
+static SVELTE_APP_TEMPL: &str = r#"
+    {
+        const appTag = document.getElementById("%0");
+        const app = new %1 ({
+            target: appTag
+        });
+    }
+"#;
 pub fn render(tera: &mut tera::Tera, htdoc: &str, blog: &Blog) -> Result<String, String> {
     let mut context = Context::new();
 
@@ -114,12 +132,20 @@ pub fn render(tera: &mut tera::Tera, htdoc: &str, blog: &Blog) -> Result<String,
     if blog.bib != "" {
         context.insert("bib", &blog.bib);
     }
-
+    if blog.sveltes.len() > 1 {
+        let mut sveltes = String::new();
+        for ref svelte in &blog.sveltes {
+            let code = SVELTE_APP_TEMPL.to_string();
+            let code = code.replace("%0", &svelte.0);
+            let code = code.replace("%1", &svelte.1);
+            sveltes.push_str(&code);
+        }
+        context.insert("sveltes", &sveltes);
+    }
     let result = tera.render("blog.html", &context);
     if result.is_err() {
         return Err(format!("render error: {}", result.err().unwrap().to_string()));
     }
-
     return Ok( result.unwrap() );
 }
 

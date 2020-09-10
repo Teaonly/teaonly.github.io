@@ -339,6 +339,21 @@ where
                 self.write("\">")
             }
             Tag::Image(_link_type, dest, title) => {
+                if dest.as_ref() == "svelte" {
+                    // alt must be empty
+                    if let Some(event) = self.iter.next() {
+                        if let End(_) = event {                        
+                        } else {
+                            panic!("Internal svelte parsing error!");
+                        }
+                    }
+                    
+                    // Placing an div to show svelte app
+                    self.write("<d-figure><div id=\"")?;
+                    escape_html(&mut self.writer, &title)?;
+                    self.write("\" /></div></d-figure>")?;
+                    return Ok(());
+                }
                 self.write("<d-figure><img src=\"")?;
                 escape_href(&mut self.writer, &dest)?;
                 self.write("\" alt=\"")?;

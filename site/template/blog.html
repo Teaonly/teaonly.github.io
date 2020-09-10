@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="widistillh=device-widistillh, initial-scale=1">
     <title>{{ title }}</title> 
+{% if sveltes %}
+    <link rel='stylesheet' href='bundle.css'>
+    <script src="bundle.js"></script>
+{% endif %}
     <script src="/template.v2.js"></script>
 </head>
 
@@ -37,14 +41,24 @@
 
 </d-article>
 
-    <d-appendix> 
-        <d-footnote-list></d-footnote-list>    
-        <d-citation-list></d-citation-list>       
-    </d-appendix>
- 
-    <distill-footer></distill-footer>
+<d-appendix> 
+    <d-footnote-list></d-footnote-list>    
+    <d-citation-list></d-citation-list>       
+</d-appendix>
 
-    {% if bib %}
-    <d-bibliography src="{{ bib }}"></d-bibliography>        
-    {% endif %}    
+<distill-footer></distill-footer>
+
+<!-- loading bibliography -->
+{% if bib %}
+<d-bibliography src="{{ bib }}"></d-bibliography>        
+{% endif %}
+
+
+<!-- loading sveltes -->
+{% if sveltes %}
+<script>{
+{{ sveltes }}
+}</script>
+{% endif %}
+
 </body>

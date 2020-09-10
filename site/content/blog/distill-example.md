@@ -5,6 +5,11 @@ template: blog
 target: artical
 date: 2019-10-10
 bib: bibliography.bib
+sveltes:
+  - div: demo-app-container
+    app: DemoApp
+  - div: demo-app-container2
+    app: DemoApp
 -->
 
 ### Distill.pub网站介绍
