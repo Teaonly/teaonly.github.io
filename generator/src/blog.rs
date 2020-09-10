@@ -132,7 +132,7 @@ pub fn render(tera: &mut tera::Tera, htdoc: &str, blog: &Blog) -> Result<String,
     if blog.bib != "" {
         context.insert("bib", &blog.bib);
     }
-    if blog.sveltes.len() > 1 {
+    if blog.sveltes.len() > 0 {
         let mut sveltes = String::new();
         for ref svelte in &blog.sveltes {
             let code = SVELTE_APP_TEMPL.to_string();

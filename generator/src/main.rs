@@ -110,9 +110,18 @@ fn main() {
             }
 
             // copy sevlet files from source to target
-            {
-                let src = root_dir
-            }            
+            if blog.sveltes.len() > 0 {
+                let src_pattern = root_dir.to_string() + "/svelte/" + &blog.code + "/public/build/*";
+                let src_glob = glob(&src_pattern).expect("Invalid glob");
+                let all_src: Vec<_> = src_glob.filter_map(|e| e.ok()).collect();
+                if all_src.len() == 0 {
+                    panic!("Frontmarker has svelte, but can'f find svelte's target!");
+                }
+                for ref src in all_src {
+                    let dst = target_dir.join("blog").join(&blog.code).join( src.file_name().unwrap().to_str().unwrap() );
+                    fs::copy(src, dst).unwrap();
+                }
+            }
 
             all_blog.push(blog_short);
         } else {

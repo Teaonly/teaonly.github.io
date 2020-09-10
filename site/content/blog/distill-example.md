@@ -8,8 +8,6 @@ bib: bibliography.bib
 sveltes:
   - div: demo-app-container
     app: DemoApp
-  - div: demo-app-container2
-    app: DemoApp
 -->
 
 ### Distill.pub网站介绍
@@ -100,4 +98,6 @@ Distill模板支持引用 Citation , 这里采用了\[@xxx\]的扩展，如论�
 
 在线文章的最大好处，就是可以充分利用Web强大的交互特点，因此Distill.pub网站录用的文章，都配置了精美的交互可视化案例。
 如果可以的话，我认为在打印成pdf格式，交互图像上应该附上交互操作网址的二维码。
+
+![](svelte "demo-app-container")
 
