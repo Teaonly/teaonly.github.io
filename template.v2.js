@@ -8989,7 +8989,7 @@ distill-header .nav a {
 }
 </style>
 <div class="content">
-  <a class="logo">
+  <a class="logo" href="/">
     Teaonly的个人网站
   </a>
   <nav class="nav">
