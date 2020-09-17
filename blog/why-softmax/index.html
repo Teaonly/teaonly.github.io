@@ -1,0 +1,178 @@
+
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="widistillh=device-widistillh, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Softmax公式的来由</title> 
+
+    <script src="/template.v2.js"></script>
+</head>
+
+<body>    
+    <distill-header></distill-header>
+    <d-front-matter>
+        <script id='distill-front-matter' type="text/json">{
+            "published": "2020-04-13",
+            "authors": [
+                {
+                "author":"Teaonly",
+                "authorURL":"https://teaonly.github.io/",
+                "affiliations": [{"name": "teaonly.info"}]
+                }
+            ],
+            "katex": {
+                "delimiters": [
+                {"left": "$$", "right": "$$", "display": false}
+                ]
+            }
+        }</script>
+    </d-front-matter>
+    <d-title>
+        <h1>Softmax公式的来由</h1>
+        <p>本文介绍了指数函数分布族，以及通用线性模型，以及sigmoid/softmax公式的推导</p>
+    </d-title>
+
+<d-article>
+
+<p>softmax公式是大家都熟悉的公式，形式如下:</p>
+<d-math block="">
+p(y_i|x) = \frac{e^{\theta_i^Tx}} { \sum_{j=1}^{K} e^{\theta_j^Tx} }
+
+</d-math>
+<p>关于这个公式的含义是，K表示类别，<d-math>y_i</d-math>表示第i个类别是否为1,  <d-math>x</d-math>表示特征，<d-math>\theta_j</d-math>参数每个类别一个和<d-math>x</d-math>一样维度的向量，整个公式返回<d-math>y_i</d-math>的概率 估计。softmax有很多的优势，比如数值计算上比较接近hardmax (所谓hardmax，即0/1，哪个分量最大返回1，其他为0)，梯度计算简单，通过公式简的变形，也可以做到数值计算稳定，另外，配合cross entropy函数，其梯度计算也比较简单。</p>
+<p>但是为什么选择了softmax这样的形式来表示条件概率？或者说为什么在多分类问题中，使用了softmax函数。这是一个非常有意思的问题，很多AI工程师都搞不清楚为什么要用这样的形式，或者说弄不清楚，softmax公式的由来。本文介绍一种推导路径，即从GLM(Generalized Linear Model，通用线性模型)的多分类PDF函数推导得到softmax公式<d-footnote id="note1">本文内容，主要参考了CS229的Lecture3, 地址：http://cs229.stanford.edu/notes/cs229-notes1.pdf</d-footnote>。</p>
+<h3>指数函数分布族</h3>
+<p>首先引入指数函数分布族，指数函数分布族，指的是随机变量的PDF函数(或者离散随机变量的PMF)，可以用下面的指数函数来表示：</p>
+<d-math block="">
+p(y;\eta) = b(y) e^{\eta^T T(y) - a(\eta)}
+</d-math>
+<p>上面这个公式，就是指数函数分布族(exponential family distributions), 表示的是随机变量Y的取值为<d-math>y</d-math>时的PDF(概率密度函数). 公式中参数<d-math>\eta</d-math>也叫做自然参数（natural paramter, 有时候也叫做canonical paramter). <d-math>T(y)</d-math> 是充分统计量(sufficient statistic), 最常见的形式是 <d-math>T(y)=y</d-math>. <d-math>a(\eta)</d-math> 指的是对数配分函数(log partition function), 用来满足PDF函数积分为1的约束. T,a,b的定义形式，决定了分布函数的类型。</p>
+<h4>高斯分布就属于指数函数分布族</h4>
+<p>为了简化形式，我们首先假设高斯分布中的方差为1，即<d-math>\delta</d-math>=1. 从高斯原始定义出发，进行简单变形，可以得到上面得指数函数分布族得形式。</p>
+<d-math block="">
+\begin{aligned}
+p(y;\mu) &amp;= \frac{1}{\sqrt{2\pi}} exp(-\frac{1}{2}(y-\mu)^2) \\
+         &amp;= \frac{1}{\sqrt{2\pi}} exp(-\frac{1}{2}y^2) exp(\mu y - \frac{1}{2}\mu^2) \\
+thus,\\
+T(y) &amp;= y  \\
+\eta &amp;= \mu \\ 
+a(\eta) &amp;= \mu^2/2 \\
+        &amp;= \eta^2/2 \\
+b(y) &amp;= (1/\sqrt{2\pi})exp(-y^2/2) 
+\end{aligned}
+</d-math>
+<p>除了高斯分布，其他常见的分布，比如二分类的伯努利分布，泊松分布都属于这一类分布，他们的PDF函数都可以变形到指数函数族。</p>
+<h3>构造通用线性模型 (Generalized Linear Model)</h3>
+<p>在各种预测和回归问题中，我们需要的条件概率，即<d-math>p(y|x; \theta)</d-math>, 通用线性模型就是假设条件概率下，随机变量Y是指数函数族分布，我们最终需要的预测函数<d-math>h_\theta(x)</d-math> 他返回的是函数T(y)的数学期望。此外，我们指定自然参数<d-math>\eta</d-math> 和 x 之间关系是线性的，用公式描述如下：</p>
+<d-math block="">
+\begin{aligned}
+p(y|x) &amp;= ExponentialFamily(\eta) \\
+h_\theta(x) &amp;= E(p(T(y)|x)) \\
+     &amp;= E(p(y|x)) \\
+\eta &amp;= \theta^Tx
+\end{aligned}
+</d-math>
+<p>上面公式中，第二个等式的意思是，大多数情况下T(y)=y， 通过前面两个假设，我们就建立了 <d-math>h_\theta, \eta</d-math> 之间的关系，就可以根据指定的ExponentialFamily，来推导出预测函数。他们之间的关系是：</p>
+<ol>
+<li>条件概率分布属于指数函数分布族</li>
+<li>目标函数(预测函数)输出为条件概率的期望，根据分布可以表达为自然参数<d-math>\eta</d-math>的函数</li>
+<li>通过<d-math>\eta = \theta^Tx</d-math>, 得到目标函数 <d-math>h_\theta(x)</d-math> 在输入x和<d-math>\theta</d-math>下的表达式</li>
+</ol>
+<h3>案例：逻辑回归的推导</h3>
+<h4>二分类的伯努利分布，指数函数分布族形式</h4>
+<p>首先我们看看逻辑回归对应的二分类问题，首先我们写出伯努利分布的pdf，其中<d-math>\phi</d-math>是唯一参数，将他改写为 <d-math>T,a,b,\eta</d-math>的形式。</p>
+<d-math block="">
+\begin{aligned}
+p(y;\phi) &amp;= \phi^y(1-\phi)^y \\
+          &amp;= exp(y.log(\phi) + (1-y).log(1-\phi)) \\
+          &amp;= exp( log(\frac{\phi}{1-\phi}).y + log(1-\phi)) \\
+thus,\\
+T(y) &amp;= y  \\
+b(y) &amp;= 1   \\
+\eta &amp;= log(\frac{\phi}{1-\phi}) =&gt; \phi = 1 / (1 + e^\eta) \\
+a(\eta) &amp;= - log(1-\phi)) \\
+        &amp;= log (1+e^\eta) 
+\end{aligned}
+</d-math>
+<p>根据前述的GLM方法，我们可以推导预测函数：</p>
+<d-math block="">
+\begin{aligned}
+h_\theta(y|x; \theta) &amp;= E(y|x; \theta) = \phi \\
+        &amp; = 1 / (1 + e^\eta) \\
+        &amp; = 1 / (1 + e^{\theta^Tx})
+\end{aligned}
+</d-math>
+<p>上面sigmoid函数的推导的基础是，我们假设条件概率分布是伯努利分布，其次我们需要预测函数返回的前面这个分布的数学期望，带参数数学期望最后用<d-math>g(\eta)</d-math> 来表示，这个函数g也被称为canonical response function，最后我们直接将<d-math>\eta</d-math>用<d-math>\theta^Tx</d-math>线性表达即可。</p>
+<h3>案例：Softmax 回归的推导</h3>
+<p>同样，按照相同的方法来推导softmax公式，这次是多分类问题，那么分布函数是multinomial分布，随机变量y取值从1到K，表示多分类的列别，我们通过函数T(y)把，把标量变成向量，注意这个向量的维度为 k -1 :</p>
+<d-math block="">
+T(y=1) = \left[ \begin{aligned} 1 \\ 0 \\ ... \\ 0 \\ 0 \\ 0 \end{aligned} \right],
+T(y=2) = \left[ \begin{aligned} 0 \\ 1 \\ ... \\ 0 \\ 0 \\ 0 \end{aligned} \right], ... ,
+T(y=k-1) = \left[ \begin{aligned} 0 \\ 0 \\ ... \\ 0 \\ 0 \\ 1 \end{aligned} \right], 
+T(y=k) = \left[ \begin{aligned} 0 \\ 0 \\ ... \\ 0 \\ 0 \\ 0 \end{aligned} \right]
+</d-math>
+<p>上面这随机变量在multinomial分布，也可以写成指数函数的形式：</p>
+<d-math block="">
+\begin{aligned}
+p(y;\phi) &amp;= \phi_1^{1 \left\{ y=1 \right\}} \phi_2^{1 \left\{ y=2 \right\}}...\phi_k^{1 \left\{ y=k \right\}} \\
+          &amp;= \phi_1^{1 \left\{ y=1 \right\}} \phi_2^{1 \left\{ y=2 \right\}}...\phi_k^{1 - \sum_i^{k-1}1\left\{ y=k \right\}} \\
+          &amp;= \phi_1^{T(y)_1} \phi_2^{T(y)_2} ... \phi_{k-1}^{T(k-1)_{k-1}} \phi_k^{1 - \sum_i^{k-1}T(y)_i} \\
+          &amp;= exp( T(y)_1 log(\phi_1) + T(y)_2 log(\phi_2)) + ... + T(y)_{k-1} log(\phi_{k-1}) + (1 - \sum_i^{k-1}T(y)_i) log(\phi_k) ) \\
+          &amp;= exp( T(y)_1 log(\phi_1/\phi_k) + T(y)_2 log(\phi_2/\phi_k)) + ... + T(y)_{k-1} log(\phi_{k-1}/\phi_k) + log(\phi_k) ) \\
+          &amp;= b(\eta) exp( \eta^T .y - a(\eta)) \\
+thus, \\
+\eta &amp;= \left[ log(\phi_1/\phi_k) , log(\phi_2/\phi_k) , log(\phi_{k-1}/\phi_k)  \right]^T \\
+a(\eta) &amp;= - log(\phi_k) \\
+b(y) &amp;= 1
+\end{aligned}
+</d-math>
+<p>再接下来，简化一下<d-math>\eta</d-math>和<d-math>\phi</d-math>之间的关系，注意这里指定了 <d-math>\eta_k=0</d-math>, 扩展维度到k.</p>
+<d-math block="">
+\begin{aligned} 
+\eta_i    &amp;= log \frac{\phi_i}{\phi_{k}}  \\
+\phi_{i}  &amp;= e^{\eta_i} \phi_{k}       \\
+\phi_{k}\sum_{i=1}^{k}e^{\eta_i} &amp;= \sum_{i=1}^{k}\phi_i = 1 \\
+\phi_{k} &amp;= 1 / \sum_{i=1}{k}e^{\eta_i}
+\end{aligned}
+</d-math>
+<p>根据上面这几个公式，化简形式可以得到：</p>
+<d-math block="">
+\phi_{i} = \frac{e^{\eta_i}}{\sum_{i=1}^{k}e^{\eta_i}}
+</d-math>
+<p>上面这个公式，已经具备了softmax公式, 因此可以直接推导我们的目标函数，为了方便表达，我们指定<d-math>\theta_k=0</d-math>，自然满足前面<d-math>\eta_k=\theta_kx=0</d-math>的设置：</p>
+<d-math block="">
+\begin{aligned}
+h_{\theta}(x) &amp;= E(T(y)|x; \theta) \\
+              &amp;= [\phi_1, \phi_2, ..., \phi_{k-1}]^T \\
+              &amp;= [ \\
+              &amp;  \frac{e^{\theta_1x}}{\sum_{i=1}^{k}e^{\theta_ix}}, \\
+              &amp;  \frac{e^{\theta_2x}}{\sum_{i=1}^{k}e^{\theta_ix}}, \\
+              &amp;  , ...,  \\
+              &amp;  \frac{e^{\theta_{k-1}x}}{\sum_{i=1}^{k}e^{\theta_ix}}\\
+              &amp; ]^T
+\end{aligned} 
+</d-math>
+<p>最后我们依据<d-math>\sum_{i=1}^{k}\phi_i=1</d-math>，将<d-math>h_\theta(x)</d-math>扩充一个维度，就可以得到标准的softmax公式了。</p>
+<d-math block="">
+h_{\theta}^j(x) = \frac{e^{\theta_jx}}{\sum_{i=1}^{k}e^{\theta_ix}} 
+</d-math>
+ 
+
+</d-article>
+
+<d-appendix> 
+    <d-footnote-list></d-footnote-list>    
+    <d-citation-list></d-citation-list>       
+</d-appendix>
+
+<distill-footer></distill-footer>
+
+<!-- loading bibliography -->
+
+
+
+<!-- loading sveltes -->
+
+
+</body>
