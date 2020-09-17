@@ -1,5 +1,5 @@
 <!--
-title: 什么是distill风格的在线学术文章
+title: Distill风格的在线学术文章
 desc: 本文简单介绍了 distill.pub 网站, distill 风格文章以及 为何要倡导做一名Distiller. 
 template: blog
 target: artical
